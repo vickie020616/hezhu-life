@@ -55,8 +55,8 @@ document.querySelector("#expenseForm").addEventListener("submit", event => {
   row.className = "expense-row";
   row.innerHTML = `
     <span class="category-icon grocery"><i data-lucide="receipt-text"></i></span>
-    <div class="expense-main"><strong>${title}</strong><span>小满支付 · 刚刚</span></div>
-    <div class="split-avatars"><span class="avatar avatar-you">林</span><span class="avatar avatar-qiao">乔</span><span class="avatar avatar-an">安</span><span class="avatar avatar-lu">陆</span></div>
+    <div class="expense-main"><strong>${title}</strong><span>Vickie 支付 · 刚刚</span></div>
+    <div class="split-avatars"><span class="avatar avatar-you">V</span><span class="avatar avatar-qiao">S</span><span class="avatar avatar-an">H</span><span class="avatar avatar-lu">F</span></div>
     <div class="expense-amount"><strong>¥ ${amount.toFixed(2)}</strong><span>人均 ¥${(amount / 4).toFixed(2)}</span></div>
     <span class="status-pill reviewing">待确认</span>`;
   document.querySelector("#expenseList").prepend(row);
