@@ -148,38 +148,52 @@
         </div>
         <section class="panel table-panel">
           <div class="panel-header">
-            <div class="segmented"><button class="active">全部</button><button>待确认</button><button>待支付</button><button>已结清</button></div>
-            <button class="filter-button"><i data-lucide="sliders-horizontal"></i> 筛选</button>
+            <div class="segmented" id="expenseStatusFilter">
+              <button class="active" data-filter="all">全部</button>
+              <button data-filter="pending-confirmation" title="等待参与分摊的室友确认金额和分摊对象">待确认</button>
+              <button data-filter="pending-payment">待支付</button>
+              <button data-filter="settled">已结清</button>
+            </div>
+            <div class="filter-menu">
+              <button class="filter-button" id="expenseCategoryToggle" aria-expanded="false"><i data-lucide="sliders-horizontal"></i> <span>全部类别</span></button>
+              <div class="filter-popover" id="expenseCategoryFilter">
+                <button class="active" data-category="all"><i data-lucide="layout-grid"></i>全部类别<i data-lucide="check"></i></button>
+                <button data-category="utilities"><i data-lucide="zap"></i>水电燃气<i data-lucide="check"></i></button>
+                <button data-category="groceries"><i data-lucide="shopping-cart"></i>日用采购<i data-lucide="check"></i></button>
+                <button data-category="housing"><i data-lucide="house"></i>房租物业<i data-lucide="check"></i></button>
+              </div>
+            </div>
           </div>
           <div class="expense-list" id="expenseList">
-            <div class="expense-row">
+            <div class="expense-row" data-status="pending-confirmation" data-category="utilities">
               <span class="category-icon electricity"><i data-lucide="zap"></i></span>
               <div class="expense-main"><strong>8 月电费</strong><span>Hallie 支付 · 9 月 11 日</span></div>
               <div class="split-avatars"><span class="avatar avatar-you">V</span><span class="avatar avatar-qiao">S</span><span class="avatar avatar-an">H</span><span class="avatar avatar-lu">F</span></div>
               <div class="expense-amount"><strong>¥ 236.80</strong><span>你需付 ¥59.20</span></div>
-              <button class="pay-button">去支付</button>
+              <button class="confirm-expense-button">确认费用</button>
             </div>
-            <div class="expense-row">
+            <div class="expense-row" data-status="settled" data-category="groceries">
               <span class="category-icon grocery"><i data-lucide="shopping-cart"></i></span>
               <div class="expense-main"><strong>厨房调料补充</strong><span>Vickie 支付 · 9 月 9 日</span></div>
               <div class="split-avatars"><span class="avatar avatar-you">V</span><span class="avatar avatar-qiao">S</span><span class="avatar avatar-lu">F</span></div>
               <div class="expense-amount"><strong>¥ 96.00</strong><span>人均 ¥32.00</span></div>
               <span class="status-pill settled">已结清</span>
             </div>
-            <div class="expense-row">
+            <div class="expense-row" data-status="pending-payment" data-category="utilities">
               <span class="category-icon water"><i data-lucide="droplets"></i></span>
               <div class="expense-main"><strong>8 月水费</strong><span>Feng 支付 · 9 月 7 日</span></div>
               <div class="split-avatars"><span class="avatar avatar-you">V</span><span class="avatar avatar-qiao">S</span><span class="avatar avatar-an">H</span><span class="avatar avatar-lu">F</span></div>
               <div class="expense-amount"><strong>¥ 108.80</strong><span>你需付 ¥27.20</span></div>
               <button class="pay-button">去支付</button>
             </div>
-            <div class="expense-row">
+            <div class="expense-row" data-status="settled" data-category="housing">
               <span class="category-icon wifi"><i data-lucide="wifi"></i></span>
               <div class="expense-main"><strong>宽带月费</strong><span>Stella 支付 · 9 月 3 日</span></div>
               <div class="split-avatars"><span class="avatar avatar-you">V</span><span class="avatar avatar-qiao">S</span><span class="avatar avatar-an">H</span><span class="avatar avatar-lu">F</span></div>
               <div class="expense-amount"><strong>¥ 120.00</strong><span>人均 ¥30.00</span></div>
               <span class="status-pill settled">已结清</span>
             </div>
+            <div class="empty-state" id="expenseEmpty"><i data-lucide="receipt-text"></i><strong>没有符合条件的账单</strong><span>试试切换状态或费用类别</span></div>
           </div>
         </section>
       </section>
@@ -223,7 +237,7 @@
         </div>
         <div class="supply-toolbar">
           <div class="search-box"><i data-lucide="search"></i><input id="supplySearch" placeholder="搜索公共物品"></div>
-          <div class="segmented"><button class="active">全部 8</button><button>需补货 3</button><button>充足 5</button></div>
+          <div class="segmented" id="supplyStatusFilter"><button class="active" data-filter="all">全部 6</button><button data-filter="low">需补货 3</button><button data-filter="sufficient">充足 3</button></div>
         </div>
         <div class="supply-grid" id="supplyGrid">
           <article class="supply-item low" data-name="抽纸">
@@ -250,6 +264,7 @@
             <div class="supply-art rice-art">🍚</div><div class="supply-info"><div><h3>大米</h3><p>厨房 · Vickie 上次购买</p></div><span class="stock">剩余 4.5 kg</span></div>
             <div class="stock-bar full"><span style="width:65%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button></div>
           </article>
+          <div class="empty-state supply-empty" id="supplyEmpty"><i data-lucide="package-search"></i><strong>没有找到相关物品</strong><span>试试其他关键词或库存状态</span></div>
         </div>
       </section>
 

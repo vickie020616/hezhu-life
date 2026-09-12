@@ -53,12 +53,14 @@ document.querySelector("#expenseForm").addEventListener("submit", event => {
   const amount = Number(data.get("amount"));
   const row = document.createElement("div");
   row.className = "expense-row";
+  row.dataset.status = "pending-confirmation";
+  row.dataset.category = "groceries";
   row.innerHTML = `
     <span class="category-icon grocery"><i data-lucide="receipt-text"></i></span>
     <div class="expense-main"><strong>${title}</strong><span>Vickie 支付 · 刚刚</span></div>
     <div class="split-avatars"><span class="avatar avatar-you">V</span><span class="avatar avatar-qiao">S</span><span class="avatar avatar-an">H</span><span class="avatar avatar-lu">F</span></div>
     <div class="expense-amount"><strong>¥ ${amount.toFixed(2)}</strong><span>人均 ¥${(amount / 4).toFixed(2)}</span></div>
-    <span class="status-pill reviewing">待确认</span>`;
+    <button class="confirm-expense-button">确认费用</button>`;
   document.querySelector("#expenseList").prepend(row);
   state.lastExpense = { title, amount };
   saveState();
@@ -67,17 +69,83 @@ document.querySelector("#expenseForm").addEventListener("submit", event => {
   document.querySelector("#splitAmount").textContent = "每人 ¥0.00";
   iconRefresh();
   switchPage("expenses");
+  applyExpenseFilters();
+  updateExpenseBadge();
   showToast("费用已记录，已通知 3 位室友");
 });
 
-document.querySelectorAll(".pay-button").forEach(button => {
+let activeExpenseStatus = "all";
+let activeExpenseCategory = "all";
+
+function applyExpenseFilters() {
+  let visibleCount = 0;
+  document.querySelectorAll("#expenseList .expense-row").forEach(row => {
+    const statusMatch = activeExpenseStatus === "all" || row.dataset.status === activeExpenseStatus;
+    const categoryMatch = activeExpenseCategory === "all" || row.dataset.category === activeExpenseCategory;
+    const visible = statusMatch && categoryMatch;
+    row.style.display = visible ? "" : "none";
+    if (visible) visibleCount += 1;
+  });
+  document.querySelector("#expenseEmpty").classList.toggle("show", visibleCount === 0);
+}
+
+function updateExpenseBadge() {
+  const actionable = document.querySelectorAll('#expenseList .expense-row[data-status^="pending-"]').length;
+  document.querySelector("#expenseBadge").textContent = actionable;
+}
+
+document.querySelectorAll("#expenseStatusFilter button").forEach(button => {
   button.addEventListener("click", () => {
-    button.outerHTML = '<span class="status-pill settled">已支付</span>';
-    const remaining = document.querySelectorAll(".pay-button").length;
-    document.querySelector("#expenseBadge").textContent = remaining;
+    document.querySelectorAll("#expenseStatusFilter button").forEach(item => item.classList.remove("active"));
+    button.classList.add("active");
+    activeExpenseStatus = button.dataset.filter;
+    applyExpenseFilters();
+  });
+});
+
+const expenseCategoryToggle = document.querySelector("#expenseCategoryToggle");
+const expenseCategoryFilter = document.querySelector("#expenseCategoryFilter");
+expenseCategoryToggle.addEventListener("click", () => {
+  const open = expenseCategoryFilter.classList.toggle("open");
+  expenseCategoryToggle.setAttribute("aria-expanded", String(open));
+});
+expenseCategoryFilter.querySelectorAll("button").forEach(button => {
+  button.addEventListener("click", () => {
+    expenseCategoryFilter.querySelectorAll("button").forEach(item => item.classList.remove("active"));
+    button.classList.add("active");
+    activeExpenseCategory = button.dataset.category;
+    expenseCategoryToggle.querySelector("span").textContent = button.textContent.trim();
+    expenseCategoryToggle.classList.toggle("active", activeExpenseCategory !== "all");
+    expenseCategoryFilter.classList.remove("open");
+    expenseCategoryToggle.setAttribute("aria-expanded", "false");
+    applyExpenseFilters();
+  });
+});
+document.addEventListener("click", event => {
+  if (!event.target.closest(".filter-menu")) {
+    expenseCategoryFilter.classList.remove("open");
+    expenseCategoryToggle.setAttribute("aria-expanded", "false");
+  }
+});
+
+document.querySelector("#expenseList").addEventListener("click", event => {
+  const confirmButton = event.target.closest(".confirm-expense-button");
+  const payButton = event.target.closest(".pay-button");
+  if (!confirmButton && !payButton) return;
+  const row = event.target.closest(".expense-row");
+  if (confirmButton) {
+    row.dataset.status = "pending-payment";
+    confirmButton.outerHTML = '<button class="pay-button">去支付</button>';
+    showToast("费用已确认，现在可以支付");
+  } else {
+    row.dataset.status = "settled";
+    payButton.outerHTML = '<span class="status-pill settled">已结清</span>';
+    const remaining = document.querySelectorAll('#expenseList .expense-row[data-status="pending-payment"]').length;
     document.querySelector("#myBalance").textContent = remaining ? "¥ 27.20" : "¥ 0.00";
     showToast("支付状态已更新");
-  });
+  }
+  updateExpenseBadge();
+  applyExpenseFilters();
 });
 
 document.querySelectorAll(".complete-chore").forEach(button => {
@@ -125,10 +193,31 @@ document.querySelectorAll(".consume-button").forEach(button => {
   });
 });
 
-document.querySelector("#supplySearch").addEventListener("input", event => {
-  const keyword = event.target.value.trim().toLowerCase();
+let activeSupplyStatus = "all";
+
+function applySupplyFilters() {
+  const keyword = document.querySelector("#supplySearch").value.trim().toLowerCase();
+  let visibleCount = 0;
   document.querySelectorAll(".supply-item").forEach(card => {
-    card.style.display = card.dataset.name.toLowerCase().includes(keyword) ? "" : "none";
+    const searchMatch = card.dataset.name.toLowerCase().includes(keyword);
+    const isLow = card.classList.contains("low");
+    const statusMatch = activeSupplyStatus === "all" ||
+      (activeSupplyStatus === "low" && isLow) ||
+      (activeSupplyStatus === "sufficient" && !isLow);
+    const visible = searchMatch && statusMatch;
+    card.style.display = visible ? "" : "none";
+    if (visible) visibleCount += 1;
+  });
+  document.querySelector("#supplyEmpty").classList.toggle("show", visibleCount === 0);
+}
+
+document.querySelector("#supplySearch").addEventListener("input", applySupplyFilters);
+document.querySelectorAll("#supplyStatusFilter button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("#supplyStatusFilter button").forEach(item => item.classList.remove("active"));
+    button.classList.add("active");
+    activeSupplyStatus = button.dataset.filter;
+    applySupplyFilters();
   });
 });
 
@@ -144,7 +233,7 @@ document.querySelector(".confirm-button").addEventListener("click", event => {
   showToast("已确认约定，等待另外 2 位室友");
 });
 
-document.querySelectorAll(".segmented, .rule-tabs").forEach(group => {
+document.querySelectorAll(".rule-tabs").forEach(group => {
   group.querySelectorAll("button").forEach(button => button.addEventListener("click", () => {
     group.querySelectorAll("button").forEach(item => item.classList.remove("active"));
     button.classList.add("active");
