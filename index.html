@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="合住 - 让合租里的每一笔、每一件事都有回应。">
+  <title>合住 · 合租生活管家</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark"><i data-lucide="house-heart"></i></span>
+        <span>合住</span>
+      </div>
+      <div class="home-switcher">
+        <img src="https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=bright%20modern%20shared%20apartment%20living%20room%2C%20sunlight%2C%20green%20plants%2C%20warm%20wood%20furniture%2C%20clean%20realistic%20interior%20photography%2C%20no%20people%2C%20editorial%20quality&image_size=square" alt="青禾公寓客厅">
+        <div>
+          <strong>青禾公寓 302</strong>
+          <span>4 位室友</span>
+        </div>
+        <i data-lucide="chevrons-up-down"></i>
+      </div>
+      <nav class="main-nav" aria-label="主要导航">
+        <button class="nav-item active" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span>生活总览</span></button>
+        <button class="nav-item" data-page="expenses"><i data-lucide="receipt-text"></i><span>费用账本</span><b id="expenseBadge">2</b></button>
+        <button class="nav-item" data-page="chores"><i data-lucide="sparkles"></i><span>清洁排班</span></button>
+        <button class="nav-item" data-page="supplies"><i data-lucide="package-open"></i><span>公共物品</span><b>3</b></button>
+        <button class="nav-item" data-page="rules"><i data-lucide="scroll-text"></i><span>室友公约</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="harmony-card">
+          <div class="harmony-head"><span>本月默契值</span><strong>92</strong></div>
+          <div class="progress"><span style="width:92%"></span></div>
+          <small>比上月提升 8 分</small>
+        </div>
+        <button class="profile">
+          <span class="avatar avatar-you">林</span>
+          <span><strong>林小满</strong><small>房屋管理员</small></span>
+          <i data-lucide="settings"></i>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="mobileMenu" aria-label="打开菜单"><i data-lucide="menu"></i></button>
+        <div class="breadcrumb"><span>青禾公寓 302</span><i data-lucide="chevron-right"></i><strong id="pageCrumb">生活总览</strong></div>
+        <div class="top-actions">
+          <button class="icon-button" id="noticeButton" aria-label="通知"><i data-lucide="bell"></i><span class="notification-dot"></span></button>
+          <button class="primary-button" id="quickAdd"><i data-lucide="plus"></i><span>记一笔</span></button>
+        </div>
+      </header>
+
+      <section class="page active" id="dashboard">
+        <div class="page-heading">
+          <div><p class="eyebrow" id="todayLabel"></p><h1>下午好，小满</h1><p>家里的事情井井有条，还有 3 件事需要你留意。</p></div>
+          <div class="roommates" aria-label="室友">
+            <span class="avatar avatar-you">林</span><span class="avatar avatar-qiao">乔</span><span class="avatar avatar-an">安</span><span class="avatar avatar-lu">陆</span>
+            <span class="roommate-label">我们 4 人</span>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="overview-card balance-card">
+            <div class="card-label"><i data-lucide="wallet-cards"></i><span>我的待结算</span></div>
+            <div class="metric-line"><strong id="myBalance">¥ 86.40</strong><span class="trend">待支付 2 笔</span></div>
+            <div class="balance-detail">
+              <span>本月支出 <b>¥ 1,284.60</b></span>
+              <span>应收 <b>¥ 32.00</b></span>
+            </div>
+            <button class="text-button" data-goto="expenses">查看明细 <i data-lucide="arrow-right"></i></button>
+          </div>
+          <div class="overview-card chore-card">
+            <div class="card-label"><i data-lucide="calendar-check"></i><span>本周值日</span></div>
+            <div class="chore-today">
+              <div class="date-block"><strong>12</strong><span>周六</span></div>
+              <div><strong>客厅与阳台</strong><p>今天 21:00 前完成</p></div>
+            </div>
+            <button class="secondary-button complete-chore"><i data-lucide="circle-check"></i> 标记完成</button>
+          </div>
+          <div class="overview-card supply-card">
+            <div class="card-label"><i data-lucide="shopping-basket"></i><span>需要补货</span></div>
+            <div class="supply-preview">
+              <span class="supply-icon paper">🧻</span>
+              <span class="supply-icon soap">🧴</span>
+              <span class="supply-icon bag">🗑️</span>
+              <div><strong>3 件物品</strong><p>抽纸即将用完</p></div>
+            </div>
+            <button class="text-button" data-goto="supplies">查看清单 <i data-lucide="arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel activity-panel">
+            <div class="panel-header"><div><h2>最近动态</h2><p>这个家刚刚发生了什么</p></div><button class="ghost-button">全部动态</button></div>
+            <div class="timeline" id="activityTimeline">
+              <div class="timeline-item">
+                <span class="timeline-icon mint"><i data-lucide="check"></i></span>
+                <div><p><b>乔乔</b> 完成了「厨房清洁」</p><span>今天 10:24</span></div>
+                <span class="points">+10 默契值</span>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-icon amber"><i data-lucide="receipt"></i></span>
+                <div><p><b>安然</b> 记录了电费 ¥236.80</p><span>昨天 21:16 · 每人 ¥59.20</span></div>
+                <button class="status-button pending" data-goto="expenses">待确认</button>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-icon blue"><i data-lucide="package-plus"></i></span>
+                <div><p><b>陆一</b> 补充了 12 卷垃圾袋</p><span>昨天 18:40</span></div>
+                <span class="status-button done">已入库</span>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-icon violet"><i data-lucide="message-square-text"></i></span>
+                <div><p><b>小满</b> 更新了「访客留宿」约定</p><span>9 月 10 日 20:32</span></div>
+                <button class="status-button pending" data-goto="rules">2 人待确认</button>
+              </div>
+            </div>
+          </section>
+
+          <aside class="panel week-panel">
+            <div class="panel-header"><div><h2>本周安排</h2><p>9 月 8 日 - 14 日</p></div><button class="icon-button small" data-goto="chores" aria-label="查看排班"><i data-lucide="arrow-up-right"></i></button></div>
+            <div class="week-list">
+              <div class="week-row past"><span><b>一</b><small>08</small></span><div><strong>卫生间</strong><p>安然 · 已完成</p></div><i data-lucide="circle-check-big"></i></div>
+              <div class="week-row past"><span><b>三</b><small>10</small></span><div><strong>厨房</strong><p>乔乔 · 已完成</p></div><i data-lucide="circle-check-big"></i></div>
+              <div class="week-row today"><span><b>六</b><small>12</small></span><div><strong>客厅与阳台</strong><p>小满 · 待完成</p></div><i data-lucide="clock-3"></i></div>
+              <div class="week-row"><span><b>日</b><small>13</small></span><div><strong>公共物品盘点</strong><p>陆一</p></div><i data-lucide="chevron-right"></i></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page" id="expenses">
+        <div class="page-heading compact">
+          <div><p class="eyebrow">费用透明，结算简单</p><h1>费用账本</h1><p>每笔共同支出都有记录，谁付了、谁该付一目了然。</p></div>
+          <button class="primary-button add-expense"><i data-lucide="plus"></i> 记一笔费用</button>
+        </div>
+        <div class="stat-strip">
+          <div><span>本月共同支出</span><strong>¥ 1,284.60</strong><small class="up">较上月 +12%</small></div>
+          <div><span>我的待支付</span><strong class="orange">¥ 86.40</strong><small>2 笔费用</small></div>
+          <div><span>我的待收款</span><strong>¥ 32.00</strong><small>来自乔乔</small></div>
+          <div><span>已结清</span><strong>8 笔</strong><small>本月共 11 笔</small></div>
+        </div>
+        <section class="panel table-panel">
+          <div class="panel-header">
+            <div class="segmented"><button class="active">全部</button><button>待确认</button><button>待支付</button><button>已结清</button></div>
+            <button class="filter-button"><i data-lucide="sliders-horizontal"></i> 筛选</button>
+          </div>
+          <div class="expense-list" id="expenseList">
+            <div class="expense-row">
+              <span class="category-icon electricity"><i data-lucide="zap"></i></span>
+              <div class="expense-main"><strong>8 月电费</strong><span>安然支付 · 9 月 11 日</span></div>
+              <div class="split-avatars"><span class="avatar avatar-you">林</span><span class="avatar avatar-qiao">乔</span><span class="avatar avatar-an">安</span><span class="avatar avatar-lu">陆</span></div>
+              <div class="expense-amount"><strong>¥ 236.80</strong><span>你需付 ¥59.20</span></div>
+              <button class="pay-button">去支付</button>
+            </div>
+            <div class="expense-row">
+              <span class="category-icon grocery"><i data-lucide="shopping-cart"></i></span>
+              <div class="expense-main"><strong>厨房调料补充</strong><span>小满支付 · 9 月 9 日</span></div>
+              <div class="split-avatars"><span class="avatar avatar-you">林</span><span class="avatar avatar-qiao">乔</span><span class="avatar avatar-lu">陆</span></div>
+              <div class="expense-amount"><strong>¥ 96.00</strong><span>人均 ¥32.00</span></div>
+              <span class="status-pill settled">已结清</span>
+            </div>
+            <div class="expense-row">
+              <span class="category-icon water"><i data-lucide="droplets"></i></span>
+              <div class="expense-main"><strong>8 月水费</strong><span>陆一支付 · 9 月 7 日</span></div>
+              <div class="split-avatars"><span class="avatar avatar-you">林</span><span class="avatar avatar-qiao">乔</span><span class="avatar avatar-an">安</span><span class="avatar avatar-lu">陆</span></div>
+              <div class="expense-amount"><strong>¥ 108.80</strong><span>你需付 ¥27.20</span></div>
+              <button class="pay-button">去支付</button>
+            </div>
+            <div class="expense-row">
+              <span class="category-icon wifi"><i data-lucide="wifi"></i></span>
+              <div class="expense-main"><strong>宽带月费</strong><span>乔乔支付 · 9 月 3 日</span></div>
+              <div class="split-avatars"><span class="avatar avatar-you">林</span><span class="avatar avatar-qiao">乔</span><span class="avatar avatar-an">安</span><span class="avatar avatar-lu">陆</span></div>
+              <div class="expense-amount"><strong>¥ 120.00</strong><span>人均 ¥30.00</span></div>
+              <span class="status-pill settled">已结清</span>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="page" id="chores">
+        <div class="page-heading compact">
+          <div><p class="eyebrow">轮流承担，彼此轻松</p><h1>清洁排班</h1><p>按区域自动轮换，临时有事也可以一键换班。</p></div>
+          <button class="primary-button" id="newChore"><i data-lucide="calendar-plus"></i> 添加任务</button>
+        </div>
+        <div class="chore-layout">
+          <section class="panel calendar-panel">
+            <div class="calendar-head"><button class="icon-button small"><i data-lucide="chevron-left"></i></button><h2>2026 年 9 月</h2><button class="icon-button small"><i data-lucide="chevron-right"></i></button><button class="today-button">今天</button></div>
+            <div class="calendar-grid">
+              <span class="weekday">一</span><span class="weekday">二</span><span class="weekday">三</span><span class="weekday">四</span><span class="weekday">五</span><span class="weekday">六</span><span class="weekday">日</span>
+              <div class="day muted">31</div><div class="day">1</div><div class="day">2</div><div class="day"><b>3</b><span class="task-chip green">厨房 · 乔乔</span></div><div class="day">4</div><div class="day">5</div><div class="day"><b>6</b><span class="task-chip purple">卫生间 · 安然</span></div>
+              <div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day"><b>10</b><span class="task-chip green done-chip">厨房 · 乔乔 ✓</span></div><div class="day">11</div><div class="day today-cell"><b>12</b><span class="task-chip orange">客厅阳台 · 小满</span></div><div class="day"><b>13</b><span class="task-chip blue">物品盘点 · 陆一</span></div>
+              <div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day"><b>17</b><span class="task-chip green">厨房 · 安然</span></div><div class="day">18</div><div class="day">19</div><div class="day"><b>20</b><span class="task-chip purple">卫生间 · 陆一</span></div>
+              <div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day"><b>24</b><span class="task-chip green">厨房 · 小满</span></div><div class="day">25</div><div class="day">26</div><div class="day"><b>27</b><span class="task-chip purple">卫生间 · 乔乔</span></div>
+              <div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day muted">1</div><div class="day muted">2</div><div class="day muted">3</div><div class="day muted">4</div>
+            </div>
+          </section>
+          <aside class="panel duty-panel">
+            <div class="panel-header"><div><h2>今日任务</h2><p>完成后可获得默契值</p></div><span class="points-badge">+10</span></div>
+            <div class="duty-hero"><div class="illustration"><i data-lucide="sofa"></i></div><h3>客厅与阳台</h3><p>负责人：小满</p></div>
+            <ul class="checklist" id="choreChecklist">
+              <li><button><i data-lucide="circle"></i></button><span>扫地并拖地</span></li>
+              <li><button><i data-lucide="circle"></i></button><span>擦拭茶几与电视柜</span></li>
+              <li><button><i data-lucide="circle"></i></button><span>整理阳台并浇花</span></li>
+              <li><button><i data-lucide="circle"></i></button><span>清理公共垃圾桶</span></li>
+            </ul>
+            <button class="primary-button wide complete-chore"><i data-lucide="circle-check"></i> 完成今日值日</button>
+            <button class="swap-button"><i data-lucide="repeat-2"></i> 临时有事，申请换班</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page" id="supplies">
+        <div class="page-heading compact">
+          <div><p class="eyebrow">库存看得见，用完有人补</p><h1>公共物品</h1><p>记录余量和购买人，在真正用完前及时提醒。</p></div>
+          <button class="primary-button" id="addSupply"><i data-lucide="plus"></i> 登记物品</button>
+        </div>
+        <div class="supply-toolbar">
+          <div class="search-box"><i data-lucide="search"></i><input id="supplySearch" placeholder="搜索公共物品"></div>
+          <div class="segmented"><button class="active">全部 8</button><button>需补货 3</button><button>充足 5</button></div>
+        </div>
+        <div class="supply-grid" id="supplyGrid">
+          <article class="supply-item low" data-name="抽纸">
+            <div class="supply-art">🧻<span>库存告急</span></div><div class="supply-info"><div><h3>抽纸</h3><p>客厅 · 乔乔上次购买</p></div><span class="stock low-stock">剩余 1 包</span></div>
+            <div class="stock-bar"><span style="width:16%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 用了 1 包</button><button class="restock-button">我来补货</button></div>
+          </article>
+          <article class="supply-item low" data-name="洗手液">
+            <div class="supply-art soap-art">🧴<span>库存告急</span></div><div class="supply-info"><div><h3>洗手液</h3><p>卫生间 · 小满上次购买</p></div><span class="stock low-stock">剩余 15%</span></div>
+            <div class="stock-bar"><span style="width:15%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="restock-button">我来补货</button></div>
+          </article>
+          <article class="supply-item low" data-name="洗洁精">
+            <div class="supply-art cleaner-art">🫧<span>即将用完</span></div><div class="supply-info"><div><h3>洗洁精</h3><p>厨房 · 安然上次购买</p></div><span class="stock medium-stock">剩余 25%</span></div>
+            <div class="stock-bar medium"><span style="width:25%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="restock-button">我来补货</button></div>
+          </article>
+          <article class="supply-item" data-name="垃圾袋">
+            <div class="supply-art bag-art">🗑️</div><div class="supply-info"><div><h3>垃圾袋</h3><p>厨房 · 陆一昨天补充</p></div><span class="stock">剩余 12 卷</span></div>
+            <div class="stock-bar full"><span style="width:80%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 用了 1 卷</button><button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button></div>
+          </article>
+          <article class="supply-item" data-name="洗衣液">
+            <div class="supply-art laundry-art">🧺</div><div class="supply-info"><div><h3>洗衣液</h3><p>阳台 · 乔乔上次购买</p></div><span class="stock">剩余 70%</span></div>
+            <div class="stock-bar full"><span style="width:70%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button></div>
+          </article>
+          <article class="supply-item" data-name="大米">
+            <div class="supply-art rice-art">🍚</div><div class="supply-info"><div><h3>大米</h3><p>厨房 · 小满上次购买</p></div><span class="stock">剩余 4.5 kg</span></div>
+            <div class="stock-bar full"><span style="width:65%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="rules">
+        <div class="page-heading compact">
+          <div><p class="eyebrow">把边界说在前面</p><h1>室友公约</h1><p>共同讨论、共同确认，让生活习惯不再靠猜。</p></div>
+          <button class="primary-button" id="addRule"><i data-lucide="plus"></i> 新增约定</button>
+        </div>
+        <div class="rules-layout">
+          <section class="panel rules-list">
+            <div class="rules-summary">
+              <div class="rule-score"><span>公约共识度</span><strong>86<small>%</small></strong><div class="progress"><span style="width:86%"></span></div></div>
+              <div class="rule-summary-text"><strong>12 条约定正在生效</strong><p>其中 1 条有更新，等待室友确认</p></div>
+            </div>
+            <div class="rule-tabs"><button class="active">全部公约</button><button>待我确认 <b>1</b></button><button>修改记录</button></div>
+            <article class="rule-card highlighted">
+              <div class="rule-icon"><i data-lucide="user-round-plus"></i></div>
+              <div class="rule-content"><div class="rule-title"><h3>访客与留宿</h3><span class="status-pill reviewing">待确认</span></div><p>带访客回家需提前在群内告知；如需留宿，应至少提前一天征得所有室友同意，每月不超过 2 次。</p><div class="rule-meta"><span>小满于 9 月 10 日更新</span><div class="confirmers"><span class="avatar avatar-you confirmed">林</span><span class="avatar avatar-qiao confirmed">乔</span><span class="avatar avatar-an">安</span><span class="avatar avatar-lu">陆</span><small>2/4 已确认</small></div></div></div>
+              <button class="confirm-button">确认约定</button>
+            </article>
+            <article class="rule-card">
+              <div class="rule-icon green-icon"><i data-lucide="volume-2"></i></div>
+              <div class="rule-content"><div class="rule-title"><h3>安静时间</h3><span class="status-pill active-rule">已生效</span></div><p>工作日 23:00 至次日 7:30、周末 24:00 至次日 9:00 保持安静，语音或游戏请佩戴耳机。</p><div class="rule-meta"><span>2026 年 8 月 20 日通过</span><small>4/4 已确认</small></div></div>
+              <button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button>
+            </article>
+            <article class="rule-card">
+              <div class="rule-icon blue-icon"><i data-lucide="cooking-pot"></i></div>
+              <div class="rule-content"><div class="rule-title"><h3>厨房使用</h3><span class="status-pill active-rule">已生效</span></div><p>用餐后及时清洗自己的餐具并擦净灶台；冰箱内个人食物标注姓名和日期，过期食品由本人处理。</p><div class="rule-meta"><span>2026 年 8 月 18 日通过</span><small>4/4 已确认</small></div></div>
+              <button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button>
+            </article>
+          </section>
+          <aside class="rule-guide">
+            <div class="guide-visual"><i data-lucide="handshake"></i></div>
+            <h2>好公约的三个原则</h2>
+            <ul><li><span>1</span><div><strong>描述具体行为</strong><p>明确时间、频率和责任人</p></div></li><li><span>2</span><div><strong>全员共同确认</strong><p>修改后再次征求每个人意见</p></div></li><li><span>3</span><div><strong>允许友好协商</strong><p>不合适时发起讨论，而非指责</p></div></li></ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="expenseModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="expenseModalTitle">
+      <div class="modal-header"><div><span class="modal-icon"><i data-lucide="receipt-text"></i></span><div><h2 id="expenseModalTitle">记一笔共同支出</h2><p>系统将自动计算每个人应付的金额</p></div></div><button class="icon-button close-modal" aria-label="关闭"><i data-lucide="x"></i></button></div>
+      <form id="expenseForm">
+        <label>费用名称<input name="title" placeholder="例如：9 月电费" required></label>
+        <div class="form-row"><label>总金额<div class="money-input"><span>¥</span><input name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div></label><label>费用分类<select name="category"><option>水电燃气</option><option>日用采购</option><option>房租物业</option><option>其他</option></select></label></div>
+        <label>参与分摊 <span class="label-note">已选择 4 人</span></label>
+        <div class="member-select"><button type="button" class="selected"><span class="avatar avatar-you">林</span>小满<i data-lucide="check"></i></button><button type="button" class="selected"><span class="avatar avatar-qiao">乔</span>乔乔<i data-lucide="check"></i></button><button type="button" class="selected"><span class="avatar avatar-an">安</span>安然<i data-lucide="check"></i></button><button type="button" class="selected"><span class="avatar avatar-lu">陆</span>陆一<i data-lucide="check"></i></button></div>
+        <div class="split-preview"><span><i data-lucide="split"></i> 平均分摊</span><strong id="splitAmount">每人 ¥0.00</strong></div>
+        <label>备注（选填）<textarea name="note" placeholder="补充说明这笔费用"></textarea></label>
+        <div class="modal-actions"><button type="button" class="secondary-button close-modal">取消</button><button type="submit" class="primary-button">保存并通知室友</button></div>
+      </form>
+    </div>
+  </div>
+  <div class="toast" id="toast"><i data-lucide="circle-check"></i><span>操作成功</span></div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <script src="app.js"></script>
+</body>
+</html>
