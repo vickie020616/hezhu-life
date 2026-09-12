@@ -240,27 +240,27 @@
           <div class="segmented" id="supplyStatusFilter"><button class="active" data-filter="all">全部 6</button><button data-filter="low">需补货 3</button><button data-filter="sufficient">充足 3</button></div>
         </div>
         <div class="supply-grid" id="supplyGrid">
-          <article class="supply-item low" data-name="抽纸">
+          <article class="supply-item low" data-name="抽纸" data-stock="1" data-max="6" data-unit="包">
             <div class="supply-art">🧻<span>库存告急</span></div><div class="supply-info"><div><h3>抽纸</h3><p>客厅 · Stella 上次购买</p></div><span class="stock low-stock">剩余 1 包</span></div>
             <div class="stock-bar"><span style="width:16%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 用了 1 包</button><button class="restock-button">我来补货</button></div>
           </article>
-          <article class="supply-item low" data-name="洗手液">
+          <article class="supply-item low" data-name="洗手液" data-stock="15" data-max="100" data-unit="%">
             <div class="supply-art soap-art">🧴<span>库存告急</span></div><div class="supply-info"><div><h3>洗手液</h3><p>卫生间 · Vickie 上次购买</p></div><span class="stock low-stock">剩余 15%</span></div>
             <div class="stock-bar"><span style="width:15%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="restock-button">我来补货</button></div>
           </article>
-          <article class="supply-item low" data-name="洗洁精">
+          <article class="supply-item low" data-name="洗洁精" data-stock="25" data-max="100" data-unit="%">
             <div class="supply-art cleaner-art">🫧<span>即将用完</span></div><div class="supply-info"><div><h3>洗洁精</h3><p>厨房 · Hallie 上次购买</p></div><span class="stock medium-stock">剩余 25%</span></div>
             <div class="stock-bar medium"><span style="width:25%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="restock-button">我来补货</button></div>
           </article>
-          <article class="supply-item" data-name="垃圾袋">
+          <article class="supply-item" data-name="垃圾袋" data-stock="12" data-max="15" data-unit="卷">
             <div class="supply-art bag-art">🗑️</div><div class="supply-info"><div><h3>垃圾袋</h3><p>厨房 · Feng 昨天补充</p></div><span class="stock">剩余 12 卷</span></div>
             <div class="stock-bar full"><span style="width:80%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 用了 1 卷</button><button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button></div>
           </article>
-          <article class="supply-item" data-name="洗衣液">
+          <article class="supply-item" data-name="洗衣液" data-stock="70" data-max="100" data-unit="%">
             <div class="supply-art laundry-art">🧺</div><div class="supply-info"><div><h3>洗衣液</h3><p>阳台 · Stella 上次购买</p></div><span class="stock">剩余 70%</span></div>
             <div class="stock-bar full"><span style="width:70%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button></div>
           </article>
-          <article class="supply-item" data-name="大米">
+          <article class="supply-item" data-name="大米" data-stock="4.5" data-max="7" data-unit="kg">
             <div class="supply-art rice-art">🍚</div><div class="supply-info"><div><h3>大米</h3><p>厨房 · Vickie 上次购买</p></div><span class="stock">剩余 4.5 kg</span></div>
             <div class="stock-bar full"><span style="width:65%"></span></div><div class="supply-actions"><button class="consume-button"><i data-lucide="minus"></i> 更新余量</button><button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button></div>
           </article>
@@ -279,22 +279,30 @@
               <div class="rule-score"><span>公约共识度</span><strong>86<small>%</small></strong><div class="progress"><span style="width:86%"></span></div></div>
               <div class="rule-summary-text"><strong>12 条约定正在生效</strong><p>其中 1 条有更新，等待室友确认</p></div>
             </div>
-            <div class="rule-tabs"><button class="active">全部公约</button><button>待我确认 <b>1</b></button><button>修改记录</button></div>
-            <article class="rule-card highlighted">
+            <div class="rule-tabs" id="ruleTabs"><button class="active" data-tab="all">全部公约</button><button data-tab="pending">待我确认 <b id="pendingRuleCount">1</b></button><button data-tab="history">修改记录</button></div>
+            <div class="rule-current-list" id="ruleCurrentList">
+            <article class="rule-card highlighted" data-rule-state="pending">
               <div class="rule-icon"><i data-lucide="user-round-plus"></i></div>
               <div class="rule-content"><div class="rule-title"><h3>访客与留宿</h3><span class="status-pill reviewing">待确认</span></div><p>带访客回家需提前在群内告知；如需留宿，应至少提前一天征得所有室友同意，每月不超过 2 次。</p><div class="rule-meta"><span>Vickie 于 9 月 10 日更新</span><div class="confirmers"><span class="avatar avatar-you confirmed">V</span><span class="avatar avatar-qiao confirmed">S</span><span class="avatar avatar-an">H</span><span class="avatar avatar-lu">F</span><small>2/4 已确认</small></div></div></div>
               <button class="confirm-button">确认约定</button>
             </article>
-            <article class="rule-card">
+            <article class="rule-card" data-rule-state="active">
               <div class="rule-icon green-icon"><i data-lucide="volume-2"></i></div>
               <div class="rule-content"><div class="rule-title"><h3>安静时间</h3><span class="status-pill active-rule">已生效</span></div><p>工作日 23:00 至次日 7:30、周末 24:00 至次日 9:00 保持安静，语音或游戏请佩戴耳机。</p><div class="rule-meta"><span>2026 年 8 月 20 日通过</span><small>4/4 已确认</small></div></div>
               <button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button>
             </article>
-            <article class="rule-card">
+            <article class="rule-card" data-rule-state="active">
               <div class="rule-icon blue-icon"><i data-lucide="cooking-pot"></i></div>
               <div class="rule-content"><div class="rule-title"><h3>厨房使用</h3><span class="status-pill active-rule">已生效</span></div><p>用餐后及时清洗自己的餐具并擦净灶台；冰箱内个人食物标注姓名和日期，过期食品由本人处理。</p><div class="rule-meta"><span>2026 年 8 月 18 日通过</span><small>4/4 已确认</small></div></div>
               <button class="more-button" aria-label="更多"><i data-lucide="ellipsis"></i></button>
             </article>
+            <div class="empty-state" id="ruleEmpty"><i data-lucide="badge-check"></i><strong>没有待确认的公约</strong><span>当前所有公约均已处理</span></div>
+            </div>
+            <div class="rule-history" id="ruleHistory">
+              <div class="history-item"><span class="history-dot updated"><i data-lucide="pencil"></i></span><div><strong>更新了「访客与留宿」</strong><p>Vickie 调整了留宿频次与提前告知时间</p><time>2026 年 9 月 10 日 20:32</time></div></div>
+              <div class="history-item"><span class="history-dot approved"><i data-lucide="check"></i></span><div><strong>「安静时间」全员通过</strong><p>Stella、Hallie、Feng 和 Vickie 已全部确认</p><time>2026 年 8 月 20 日 22:06</time></div></div>
+              <div class="history-item"><span class="history-dot created"><i data-lucide="plus"></i></span><div><strong>创建了「厨房使用」</strong><p>Hallie 发起新公约，经讨论后进入确认流程</p><time>2026 年 8 月 18 日 19:45</time></div></div>
+            </div>
           </section>
           <aside class="rule-guide">
             <div class="guide-visual"><i data-lucide="handshake"></i></div>
@@ -317,6 +325,18 @@
         <div class="split-preview"><span><i data-lucide="split"></i> 平均分摊</span><strong id="splitAmount">每人 ¥0.00</strong></div>
         <label>备注（选填）<textarea name="note" placeholder="补充说明这笔费用"></textarea></label>
         <div class="modal-actions"><button type="button" class="secondary-button close-modal">取消</button><button type="submit" class="primary-button">保存并通知室友</button></div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-backdrop" id="supplyModal" aria-hidden="true">
+    <div class="modal stock-modal" role="dialog" aria-modal="true" aria-labelledby="supplyModalTitle">
+      <div class="modal-header"><div><span class="modal-icon"><i data-lucide="package-check"></i></span><div><h2 id="supplyModalTitle">更新物品余量</h2><p id="supplyModalDescription">填写盘点后的实际剩余量</p></div></div><button class="icon-button close-supply-modal" aria-label="关闭"><i data-lucide="x"></i></button></div>
+      <form id="supplyForm">
+        <div class="stock-input-heading"><span>当前余量</span><strong id="supplyValuePreview">0%</strong></div>
+        <input class="stock-range" id="supplyRange" type="range" min="0" max="100" step="1" value="0">
+        <label>精确数量<div class="quantity-input"><input id="supplyQuantity" type="number" min="0" step="1" required><span id="supplyUnit">%</span></div></label>
+        <div class="stock-hint"><i data-lucide="bell-ring"></i><span>余量低于 30% 时，将自动进入“需补货”清单。</span></div>
+        <div class="modal-actions"><button type="button" class="secondary-button close-supply-modal">取消</button><button type="submit" class="primary-button">保存余量</button></div>
       </form>
     </div>
   </div>

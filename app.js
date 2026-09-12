@@ -38,7 +38,12 @@ function closeExpenseModal() {
 document.querySelectorAll("#quickAdd, .add-expense").forEach(button => button.addEventListener("click", openExpenseModal));
 document.querySelectorAll(".close-modal").forEach(button => button.addEventListener("click", closeExpenseModal));
 modal.addEventListener("click", event => { if (event.target === modal) closeExpenseModal(); });
-document.addEventListener("keydown", event => { if (event.key === "Escape") closeExpenseModal(); });
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeExpenseModal();
+    closeSupplyModal();
+  }
+});
 
 const amountInput = document.querySelector('input[name="amount"]');
 amountInput.addEventListener("input", () => {
@@ -183,13 +188,109 @@ document.querySelectorAll(".restock-button").forEach(button => {
   });
 });
 
+const supplyModal = document.querySelector("#supplyModal");
+const supplyRange = document.querySelector("#supplyRange");
+const supplyQuantity = document.querySelector("#supplyQuantity");
+let editingSupplyCard = null;
+
+function formatStockValue(value) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}
+
+function updateSupplyCounts() {
+  const cards = [...document.querySelectorAll(".supply-item")];
+  const lowCount = cards.filter(card => card.classList.contains("low")).length;
+  document.querySelector('#supplyStatusFilter [data-filter="all"]').textContent = `全部 ${cards.length}`;
+  document.querySelector('#supplyStatusFilter [data-filter="low"]').textContent = `需补货 ${lowCount}`;
+  document.querySelector('#supplyStatusFilter [data-filter="sufficient"]').textContent = `充足 ${cards.length - lowCount}`;
+}
+
+function renderSupplyStock(card, value) {
+  const max = Number(card.dataset.max);
+  const unit = card.dataset.unit;
+  const normalizedValue = Math.max(0, Math.min(max, Number(value)));
+  const ratio = max ? Math.round((normalizedValue / max) * 100) : 0;
+  const isLow = ratio <= 30;
+  card.dataset.stock = String(normalizedValue);
+  card.classList.toggle("low", isLow);
+  const stock = card.querySelector(".stock");
+  stock.textContent = `剩余 ${formatStockValue(normalizedValue)}${unit === "%" ? "%" : ` ${unit}`}`;
+  stock.className = `stock${isLow ? " low-stock" : ""}`;
+  const bar = card.querySelector(".stock-bar");
+  bar.className = `stock-bar${ratio > 30 ? " full" : ratio > 20 ? " medium" : ""}`;
+  bar.querySelector("span").style.width = `${Math.max(0, ratio)}%`;
+  const art = card.querySelector(".supply-art");
+  let badge = art.querySelector("span");
+  if (isLow && !badge) {
+    badge = document.createElement("span");
+    art.appendChild(badge);
+  }
+  if (badge) {
+    badge.textContent = ratio <= 15 ? "库存告急" : "即将用完";
+    if (!isLow) badge.remove();
+  }
+  state.supplies = state.supplies || {};
+  state.supplies[card.dataset.name] = normalizedValue;
+  saveState();
+  updateSupplyCounts();
+  applySupplyFilters();
+}
+
+function syncSupplyInputs(value) {
+  const unit = editingSupplyCard.dataset.unit;
+  const normalizedValue = Math.max(0, Math.min(Number(editingSupplyCard.dataset.max), Number(value)));
+  supplyRange.value = normalizedValue;
+  supplyQuantity.value = normalizedValue;
+  document.querySelector("#supplyValuePreview").textContent = `${formatStockValue(normalizedValue)}${unit === "%" ? "%" : ` ${unit}`}`;
+}
+
+function openSupplyModal(card) {
+  editingSupplyCard = card;
+  const stock = Number(card.dataset.stock);
+  const max = Number(card.dataset.max);
+  const unit = card.dataset.unit;
+  document.querySelector("#supplyModalTitle").textContent = `更新「${card.dataset.name}」余量`;
+  document.querySelector("#supplyModalDescription").textContent = `当前记录：${formatStockValue(stock)}${unit === "%" ? "%" : ` ${unit}`}`;
+  document.querySelector("#supplyUnit").textContent = unit;
+  supplyRange.max = max;
+  supplyRange.step = unit === "kg" ? "0.1" : "1";
+  supplyQuantity.max = max;
+  supplyQuantity.step = unit === "kg" ? "0.1" : "1";
+  syncSupplyInputs(stock);
+  supplyModal.classList.add("open");
+  supplyModal.setAttribute("aria-hidden", "false");
+  setTimeout(() => supplyQuantity.focus(), 50);
+}
+
+function closeSupplyModal() {
+  supplyModal.classList.remove("open");
+  supplyModal.setAttribute("aria-hidden", "true");
+  editingSupplyCard = null;
+}
+
+supplyRange.addEventListener("input", event => syncSupplyInputs(event.target.value));
+supplyQuantity.addEventListener("input", event => {
+  if (event.target.value !== "") syncSupplyInputs(event.target.value);
+});
+document.querySelectorAll(".close-supply-modal").forEach(button => button.addEventListener("click", closeSupplyModal));
+supplyModal.addEventListener("click", event => { if (event.target === supplyModal) closeSupplyModal(); });
+document.querySelector("#supplyForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const name = editingSupplyCard.dataset.name;
+  renderSupplyStock(editingSupplyCard, Number(supplyQuantity.value));
+  closeSupplyModal();
+  showToast(`「${name}」余量已更新`);
+});
+
 document.querySelectorAll(".consume-button").forEach(button => {
   button.addEventListener("click", () => {
     const card = button.closest(".supply-item");
-    const bar = card.querySelector(".stock-bar span");
-    const current = parseInt(bar.style.width, 10);
-    bar.style.width = `${Math.max(6, current - 10)}%`;
-    showToast(`「${card.dataset.name}」余量已更新`);
+    if (button.textContent.includes("更新余量")) {
+      openSupplyModal(card);
+      return;
+    }
+    renderSupplyStock(card, Number(card.dataset.stock) - 1);
+    showToast(`已记录使用 1 ${card.dataset.unit}`);
   });
 });
 
@@ -221,8 +322,32 @@ document.querySelectorAll("#supplyStatusFilter button").forEach(button => {
   });
 });
 
+let activeRuleTab = "all";
+
+function applyRuleTab() {
+  const history = document.querySelector("#ruleHistory");
+  const currentList = document.querySelector("#ruleCurrentList");
+  const showHistory = activeRuleTab === "history";
+  history.classList.toggle("show", showHistory);
+  currentList.style.display = showHistory ? "none" : "";
+  if (showHistory) return;
+  let visibleCount = 0;
+  currentList.querySelectorAll(".rule-card").forEach(card => {
+    const visible = activeRuleTab === "all" || card.dataset.ruleState === "pending";
+    card.style.display = visible ? "" : "none";
+    if (visible) visibleCount += 1;
+  });
+  document.querySelector("#ruleEmpty").classList.toggle("show", visibleCount === 0);
+}
+
+function updatePendingRuleCount() {
+  const count = document.querySelectorAll('.rule-card[data-rule-state="pending"]').length;
+  document.querySelector("#pendingRuleCount").textContent = count;
+}
+
 document.querySelector(".confirm-button").addEventListener("click", event => {
   const card = event.currentTarget.closest(".rule-card");
+  card.dataset.ruleState = "active";
   card.querySelector(".status-pill").textContent = "我已确认";
   card.querySelector(".status-pill").className = "status-pill active-rule";
   event.currentTarget.remove();
@@ -230,14 +355,18 @@ document.querySelector(".confirm-button").addEventListener("click", event => {
   myAvatar?.classList.add("confirmed");
   state.ruleConfirmed = true;
   saveState();
+  updatePendingRuleCount();
+  applyRuleTab();
   showToast("已确认约定，等待另外 2 位室友");
 });
 
-document.querySelectorAll(".rule-tabs").forEach(group => {
-  group.querySelectorAll("button").forEach(button => button.addEventListener("click", () => {
-    group.querySelectorAll("button").forEach(item => item.classList.remove("active"));
+document.querySelectorAll("#ruleTabs button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("#ruleTabs button").forEach(item => item.classList.remove("active"));
     button.classList.add("active");
-  }));
+    activeRuleTab = button.dataset.tab;
+    applyRuleTab();
+  });
 });
 
 document.querySelector("#mobileMenu").addEventListener("click", () => {
@@ -261,6 +390,14 @@ document.querySelector("#noticeButton").addEventListener("click", event => {
 const date = new Date();
 document.querySelector("#todayLabel").textContent = `${date.getFullYear()} 年 ${date.getMonth() + 1} 月 ${date.getDate()} 日 · 星期${"日一二三四五六"[date.getDay()]}`;
 
+if (state.supplies) {
+  document.querySelectorAll(".supply-item").forEach(card => {
+    const savedValue = state.supplies[card.dataset.name];
+    if (savedValue !== undefined) renderSupplyStock(card, savedValue);
+  });
+}
+updateSupplyCounts();
+updatePendingRuleCount();
 if (state.choreComplete) document.querySelector(".complete-chore")?.click();
 if (state.ruleConfirmed) document.querySelector(".confirm-button")?.click();
 iconRefresh();
